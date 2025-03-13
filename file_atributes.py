@@ -6,10 +6,10 @@ def read_file(file):
         return lines
 
 
-def convert_to_columns():
+def convert_to_columns(file_path):
 
     result = []
-    for x in read_file(r"test\testowaTabDec.txt"):
+    for x in read_file(file_path):
         if x.strip(): 
             result.append(x.strip().split(','))  
 
@@ -18,13 +18,13 @@ def convert_to_columns():
     return(columns)
 
 
-def all_variants_of_atributs(columns):
+def all_variants_of_attributes(columns):
 
     variants = []
 
     for column in columns:
-        uniqe_values = list(set(column))
-        variants.append(uniqe_values)
+        unique_values = list(set(column))
+        variants.append(unique_values)
 
     return variants
 
@@ -42,4 +42,8 @@ def quantity_of_attributes(columns, variants):
 
     return counts
 
+file_path = r"test\testowaTabDec.txt"
 
+columns = convert_to_columns(file_path)
+variants = all_variants_of_attributes(columns)
+attributes_quantit = quantity_of_attributes(columns, variants)
