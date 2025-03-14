@@ -1,18 +1,28 @@
-from file_atributes import all_variants_of_attributes, quantity_of_attributes, convert_to_columns, read_file
+import math
 
-columns = convert_to_columns(r"test\testowaTabDec.txt")
-variants = all_variants_of_attributes(columns)
-attributes_quantit = quantity_of_attributes(columns, variants)
+def attributes_probability(attributes_quantit, all_attributes_quantit):
 
-
-def Entropy_function(attributes_quantit, all_attributes_quantit):
+    probabilities = []
 
     for quantit_list in attributes_quantit:
-        for key, item in quantit_list.items():
-            quantit_list[key] = quantit_list[key] / all_attributes_quantit
+        probability_dict = {}
 
-    return attributes_quantit
+        for key, value in quantit_list.items():
+            probability_dict[key] = value / all_attributes_quantit
+        
+        probabilities.append(probability_dict)
 
-all_attributes = len(read_file(r"test\testowaTabDec.txt"))
-print(Entropy_function(attributes_quantit, all_attributes))
+    return probabilities
 
+
+def entropy_function(probability):
+
+    decision_argument = len(probability) - 1
+    entropy = 0
+
+    for key in probability[decision_argument]:
+        p = probability[decision_argument][key]
+        if p > 0:
+            entropy += (p * math.log2(p))
+
+    return -entropy
