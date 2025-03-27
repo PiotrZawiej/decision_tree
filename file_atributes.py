@@ -41,9 +41,3 @@ def quantity_of_attributes(columns, variants):
         counts.append(count_dict)  
 
     return counts
-
-file_path = r"test\testowaTabDec.txt"
-
-columns = convert_to_columns(file_path)
-variants = all_variants_of_attributes(columns)
-attributes_quantit = quantity_of_attributes(columns, variants)
