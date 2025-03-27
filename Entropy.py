@@ -1,42 +1,38 @@
 import math
 
-def attributes_probability(attributes_quantit, all_attributes_quantit):
+def entropy_function(count_atribute):
 
-    probabilities = []
-
-    for quantit_list in attributes_quantit:
-        probability_dict = {}
-
-        for key, value in quantit_list.items():
-            probability_dict[key] = value / all_attributes_quantit
-        
-        probabilities.append(probability_dict)
-
-    return probabilities
-
-
-def entropy_function(atribute, probability):
+    total = sum(count_atribute.values())
 
     entropy = 0
 
-    for key in probability[atribute]:
-        p = probability[atribute][key]
+    for count in count_atribute.values():
+        p = count / total
         if p > 0:
-            entropy += (p * math.log2(p))
+            entropy -= p * math.log2(p)
 
-    return -entropy
+    return entropy
 
 
-# def entropy_by_decison_class_function(atribute, atrubust_quantit):
-    
-#     decision_class = atrubust_quantit[atribute]
-#     values_quantit = sum(decision_class.values())
-#     info_function = 0
-    
-#     return_list = []
-    
-#     for value in decision_class.values():
-#         return_list.append(value/values_quantit)
-        
-    
-#     return return_list
+def info_function(attribute_column, decision_column):
+
+    total_len = len(attribute_column)
+    value_class_counts = {}
+
+    # Grupowanie: dla każdej wartości atrybutu zliczamy klasy decyzyjne
+    for attr_value, decision in zip(attribute_column, decision_column):
+        if attr_value not in value_class_counts:
+            value_class_counts[attr_value] = {}
+        if decision not in value_class_counts[attr_value]:
+            value_class_counts[attr_value][decision] = 0
+        value_class_counts[attr_value][decision] += 1
+
+    # Obliczanie Info(X, T)
+    info = 0
+    for attr_value, class_counts in value_class_counts.items():
+        group_total = sum(class_counts.values())
+        group_entropy = entropy_function(class_counts)
+        weight = group_total / total_len
+        info += weight * group_entropy
+
+    return info

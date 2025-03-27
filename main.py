@@ -1,5 +1,5 @@
 from file_atributes import all_variants_of_attributes, quantity_of_attributes, convert_to_columns, read_file
-from Entropy import attributes_probability, entropy_function
+from Entropy import  entropy_function, info_function
 
 def main():
     # Convert the file into columns
@@ -10,19 +10,20 @@ def main():
     
     # Count occurrences of attribute values
     attributes_quantit = quantity_of_attributes(columns, variants)
-    print(attributes_quantit[4])
-    
-    # Get the total number of attributes (rows)
-    all_attributes = len(read_file(r"test\testowaTabDec.txt"))
-    
-    # Calculate probabilities for attribute values
-    probability = attributes_probability(attributes_quantit, all_attributes)
 
-    # Compute and print entropy
-    decision_atribute = len(attributes_quantit) - 1 
+    # Compute and print entropy    
+    # entropy = entropy_function(attributes_quantit[0])
+    # print(entropy)
+
+    decision_atribute_index = len(columns) - 1 
+    decision_atribute = list(columns[decision_atribute_index])
+
+    for i in range(len(columns)-1):
     
-    entropy = entropy_function(decision_atribute, probability)
-    print(f"Entropy is equal to {entropy}")
+        info_function_result = info_function(list(columns[i]),decision_atribute)
+        print(info_function_result)
+
+
     
 if __name__ == "__main__":
     main()
