@@ -22,8 +22,6 @@ def main():
     
         info_function_result = info_function(list(columns[i]),decision_atribute)
         print(info_function_result)
-
-
     
 if __name__ == "__main__":
     main()
