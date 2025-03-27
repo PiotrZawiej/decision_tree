@@ -15,14 +15,28 @@ def attributes_probability(attributes_quantit, all_attributes_quantit):
     return probabilities
 
 
-def entropy_function(probability):
+def entropy_function(atribute, probability):
 
-    decision_argument = len(probability) - 1
     entropy = 0
 
-    for key in probability[decision_argument]:
-        p = probability[decision_argument][key]
+    for key in probability[atribute]:
+        p = probability[atribute][key]
         if p > 0:
             entropy += (p * math.log2(p))
 
     return -entropy
+
+
+# def entropy_by_decison_class_function(atribute, atrubust_quantit):
+    
+#     decision_class = atrubust_quantit[atribute]
+#     values_quantit = sum(decision_class.values())
+#     info_function = 0
+    
+#     return_list = []
+    
+#     for value in decision_class.values():
+#         return_list.append(value/values_quantit)
+        
+    
+#     return return_list

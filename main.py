@@ -10,6 +10,7 @@ def main():
     
     # Count occurrences of attribute values
     attributes_quantit = quantity_of_attributes(columns, variants)
+    print(attributes_quantit[4])
     
     # Get the total number of attributes (rows)
     all_attributes = len(read_file(r"test\testowaTabDec.txt"))
@@ -18,8 +19,10 @@ def main():
     probability = attributes_probability(attributes_quantit, all_attributes)
 
     # Compute and print entropy
-    entropy = entropy_function(probability)
+    decision_atribute = len(attributes_quantit) - 1 
+    
+    entropy = entropy_function(decision_atribute, probability)
     print(f"Entropy is equal to {entropy}")
-
+    
 if __name__ == "__main__":
     main()
