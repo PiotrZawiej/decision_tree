@@ -14,12 +14,9 @@ def entropy_function(count_atribute):
     return entropy
 
 
-def info_function(attribute_column, decision_column):
-
-    total_len = len(attribute_column)
+def grouping(attribute_column, decision_column):
     value_class_counts = {}
 
-    # Grupowanie: dla każdej wartości atrybutu zliczamy klasy decyzyjne
     for attr_value, decision in zip(attribute_column, decision_column):
         if attr_value not in value_class_counts:
             value_class_counts[attr_value] = {}
@@ -27,7 +24,13 @@ def info_function(attribute_column, decision_column):
             value_class_counts[attr_value][decision] = 0
         value_class_counts[attr_value][decision] += 1
 
-    # Obliczanie Info(X, T)
+    return value_class_counts
+
+
+def info_function(attribute_column, decision_column):
+    total_len = len(attribute_column)
+    value_class_counts = grouping(attribute_column, decision_column)
+
     info = 0
     for attr_value, class_counts in value_class_counts.items():
         group_total = sum(class_counts.values())
