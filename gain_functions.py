@@ -1,4 +1,3 @@
-import math
 from file_atributes import convert_to_columns, quantity_of_attributes, all_variants_of_attributes
 from Entropy import entropy_function, info_function
 
