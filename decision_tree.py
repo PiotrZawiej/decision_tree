@@ -1,78 +1,76 @@
-from file_atributes import convert_to_columns, quantity_of_attributes, all_variants_of_attributes
-from Entropy import entropy_function, info_function
+
 from gain_functions import gain_ratio_function
 
-
-def wybor_najlepszego_podzialu(dane):
-    global columns, decision_atribute_index, decision_atribute_entropy
-    columns = dane 
-    decision_atribute_index = len(columns) - 1
-    decision_atribute_entropy = entropy_function(quantity_of_attributes(columns, all_variants_of_attributes(columns))[decision_atribute_index])
-
-    gain_ratios = gain_ratio_function()
-    najlepszy_atrybut = max(gain_ratios, key=gain_ratios.get)
-    return najlepszy_atrybut
-
-
-def decison_class(dane):
-    decision_column = dane[-1]
-    return all(val == decision_column[0] for val in decision_column)
-
-
-def klasa_decyzyjna(dane):
-    decision_column = dane[-1]
-    frequency = {}
-
-    for val in decision_column:
-        if val in frequency:
-            frequency[val] += 1
-        else:
-            frequency[val] = 1
-
-    max_count = -1
-    most_common = None
-    for val, count in frequency.items():
-        if count > max_count:
-            max_count = count
-            most_common = val
-
-    return most_common
-
-
-def data_descendant_for_value(dane, test_index, wartosc_index):
-    attribute_column = dane[test_index - 1] 
-    unique_values = list(set(attribute_column))
-    target_value = unique_values[wartosc_index]
-
-    filtered_rows = [
-        [col[i] for col in dane]
-        for i in range(len(attribute_column))
-        if attribute_column[i] == target_value
-    ]
-
-    return list(map(list, zip(*filtered_rows)))
-
-
-class Wezel:
+class Node:
     def __init__(self):
-        self.test = None
-        self.potomkowie = []
-        self.klasa_dec = None
+        self.test_attribute = None  
+        self.children = {}  
+        self.class_label = None
 
 
-def tree_contructo(dane):
-    w = Wezel()
-    if not decison_class(dane):
-        w.test = wybor_najlepszego_podzialu(dane)
-        unique_values = list(set(dane[w.test - 1]))  
-        for i in range(len(unique_values)):
-            dane_potomka = data_descendant_for_value(dane, w.test, i)
-            w.potomkowie.append(tree_contructo(dane_potomka))
-            print(i)
+def print_tree(node, level=0, prefix=""):
+    indent = "      " * level  
 
+    if node.class_label is not None:
+        print(f"{indent}{prefix}-> D: {node.class_label}")
     else:
-        w.klasa_dec = klasa_decyzyjna(dane)
-    return w
+        label = f"{prefix}->Attribute: {node.test_attribute + 1}" if prefix else f"Attribute: {node.test_attribute + 1}"
+        print(f"{indent}{label}")
+        for value, child in node.children.items():
+            print_tree(child, level + 1, str(value))
 
-columns = convert_to_columns(r"test\test2.txt")
-print(tree_contructo(columns))
+
+def is_homogeneous(data):
+    decision_column = data[-1]
+    return all(value == decision_column[0] for value in decision_column)
+
+
+def most_common_class(data):
+    decision_column = data[-1]
+    return max(set(decision_column), key=decision_column.count)
+
+
+def filter_data_by_value(data, attribute_index, value):
+    indices = [i for i, v in enumerate(data[attribute_index]) if v == value]
+    return [[column[i] for i in indices] for column in data]
+
+
+def choose_best_split(data):
+    gain_ratios = gain_ratio_function(data)
+    if not gain_ratios:
+        return None
+    return max(gain_ratios, key=gain_ratios.get)
+
+
+def build_tree(data):
+    node = Node()
+
+    if is_homogeneous(data):
+        node.class_label = most_common_class(data)
+        return node
+
+    best_attribute = choose_best_split(data)
+    if best_attribute is None:
+        node.class_label = most_common_class(data)
+        return node
+
+    node.test_attribute = best_attribute
+    unique_values = sorted(set(data[best_attribute]))
+
+    for value in unique_values:
+        filtered_data = filter_data_by_value(data, best_attribute, value)
+
+        if filtered_data == data:
+            child = Node()
+            child.class_label = most_common_class(data)
+        elif not filtered_data or len(filtered_data[0]) == 0:
+            child = Node()
+            child.class_label = most_common_class(data)
+        else:
+            child = build_tree(filtered_data)
+
+        node.children[value] = child
+
+    return node
+
+
