@@ -49,6 +49,3 @@ def gain_ratio_function(column):
         result_list[i] = gain_ratio
 
     return result_list
-
-
-    

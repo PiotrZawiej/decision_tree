@@ -72,5 +72,3 @@ def build_tree(data):
         node.children[value] = child
 
     return node
-
-
